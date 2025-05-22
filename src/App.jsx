@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import "remixicon/fonts/remixicon.css";
 
 function App() {
   let [showContent, setShowContent] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
+
   useGSAP(() => {
     const tl = gsap.timeline();
 
@@ -22,7 +24,7 @@ function App() {
       opacity: 0,
       onUpdate: function () {
         if (this.progress() >= 0.9) {
-          document.querySelector(".svg").remove();
+          document.querySelector(".svg")?.remove();
           setShowContent(true);
           this.kill();
         }
@@ -91,6 +93,11 @@ function App() {
     });
   }, [showContent]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setShowAIChat(true), 8000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <div className="svg flex items-center justify-center fixed top-0 left-0 z-[100] w-full h-screen overflow-hidden bg-[#000]">
@@ -122,6 +129,7 @@ function App() {
           />
         </svg>
       </div>
+
       {showContent && (
         <div className="main w-full rotate-[-10deg] scale-[1.7]">
           <div className="landing overflow-hidden relative w-full h-screen bg-black">
@@ -212,6 +220,19 @@ function App() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {showAIChat && (
+        <div className="fixed bottom-6 right-6 z-[999] bg-white text-black p-4 rounded-2xl shadow-2xl w-[300px] animate-fade-in">
+          <h3 className="text-xl mb-2">AI Assistant 🤖</h3>
+          <p className="text-sm">Hey there! Need help navigating? Just ask me anything.</p>
+          <button
+            className="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+            onClick={() => setShowAIChat(false)}
+          >
+            Close
+          </button>
         </div>
       )}
     </>
